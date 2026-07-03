@@ -20,7 +20,7 @@ git clone https://github.com/Cycle1337/mcpctl
 cd mcpctl && go build && sudo mv mcpctl /usr/local/bin/
 ```
 
-Prebuilt binaries are on the [releases page](../../releases) once the first
+Prebuilt binaries are on the [releases page](https://github.com/Cycle1337/mcpctl/releases) once the first
 tag is cut.
 
 ## Use
