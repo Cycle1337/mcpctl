@@ -1,0 +1,4 @@
+mcpctl
+mcpctl.exe
+*.test
+dist/
