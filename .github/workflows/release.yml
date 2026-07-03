@@ -1,0 +1,38 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+      - run: go test ./...
+      - name: build
+        env:
+          TARGETS: linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64
+        run: |
+          set -e
+          mkdir -p dist
+          for t in $TARGETS; do
+            os="${t%/*}"
+            arch="${t#*/}"
+            out="mcpctl"
+            [ "$os" = "windows" ] && out="mcpctl.exe"
+            GOOS="$os" GOARCH="$arch" CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o "dist/$out" .
+            (cd dist && zip -q "../mcpctl-${os}-${arch}.zip" "$out" && rm "$out")
+          done
+      - name: publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" --generate-notes mcpctl-*.zip
