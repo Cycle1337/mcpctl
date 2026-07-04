@@ -2,6 +2,10 @@
 
 Manage MCP servers across AI coding clients from one terminal.
 
+<p align="center">
+  <img src="docs/demo.svg" alt="mcpctl list output" width="720">
+</p>
+
 Claude Desktop, Cursor, Claude Code and Codex each keep their own MCP server
 list, in their own config file (JSON for the first three, TOML for Codex), in
 their own place. You end up hand-editing four files and getting the
@@ -22,6 +26,17 @@ cd mcpctl && go build && sudo mv mcpctl /usr/local/bin/
 
 Prebuilt binaries are on the [releases page](https://github.com/Cycle1337/mcpctl/releases) once the first
 tag is cut.
+
+## Demo
+
+The screenshot above is static. To watch the full walkthrough (add → list →
+show → rm) in your terminal:
+
+```
+asciinema play demo.cast
+```
+
+Or upload `demo.cast` to [asciinema.org](https://asciinema.org) to embed it.
 
 ## Use
 
