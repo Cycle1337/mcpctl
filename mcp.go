@@ -85,7 +85,7 @@ func serverFromEntry(name string, e any) Server {
 	return s
 }
 
-var errReadonly = errors.New("client is read-only in mcpctl; use the client's own command (e.g. `claude mcp add`)")
+var errReadonly = errors.New("client is read-only in mcpctl; use the client's own MCP command (e.g. `claude mcp add`, `codex mcp add`) to change it")
 
 // Client is something that owns an MCP server config.
 type Client interface {
@@ -233,6 +233,7 @@ func clients() []Client {
 			path:     func() string { return desktop },
 			writable: true,
 		},
+		codexClient{path: func() string { return filepath.Join(home, ".codex", "config.toml") }},
 	}
 }
 

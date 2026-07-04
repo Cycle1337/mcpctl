@@ -32,11 +32,14 @@ func cmdList(args []string) error {
 		if filter != "" && c.ID() != filter {
 			continue
 		}
+		fmt.Printf("# %s — %s\n", c.Name(), c.ConfigPath())
 		servers, err := c.List()
 		if err != nil {
-			return err
+			fmt.Printf("  (error: %v)\n", err)
+			any = true
+			fmt.Println()
+			continue
 		}
-		fmt.Printf("# %s — %s\n", c.Name(), c.ConfigPath())
 		if len(servers) == 0 {
 			fmt.Println("  (no servers)")
 		}
