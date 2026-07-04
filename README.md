@@ -3,8 +3,10 @@
 Manage MCP servers across AI coding clients from one terminal.
 
 <p align="center">
-  <img src="docs/demo.svg" alt="mcpctl list output" width="720">
+  <a href="demo.cast"><img src="docs/demo-anim.svg" alt="mcpctl demo" width="720"></a>
 </p>
+
+<p align="center"><sub>static fallback: <a href="docs/demo.svg">screenshot</a> · play in terminal: <code>asciinema play demo.cast</code></sub></p>
 
 Claude Desktop, Cursor, Claude Code and Codex each keep their own MCP server
 list, in their own config file (JSON for the first three, TOML for Codex), in
