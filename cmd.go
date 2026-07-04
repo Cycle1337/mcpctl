@@ -9,15 +9,15 @@ import (
 
 func cmdDoctor(args []string) error {
 	for _, c := range clients() {
-		state := "not found"
+		stateStr := faint("not found")
 		if c.Installed() {
-			state = "installed"
+			stateStr = green("installed")
 		}
 		ro := ""
 		if !c.Writable() {
-			ro = " (read-only)"
+			ro = " " + yellow("(read-only)")
 		}
-		fmt.Printf("%-16s %-10s  %s%s\n", c.ID(), state, c.ConfigPath(), ro)
+		fmt.Printf("%-16s %-12s  %s%s\n", bold(c.ID()), stateStr, c.ConfigPath(), ro)
 	}
 	return nil
 }
@@ -32,16 +32,16 @@ func cmdList(args []string) error {
 		if filter != "" && c.ID() != filter {
 			continue
 		}
-		fmt.Printf("# %s — %s\n", c.Name(), c.ConfigPath())
+		fmt.Printf("%s %s — %s\n", faint("#"), bold(c.Name()), faint(c.ConfigPath()))
 		servers, err := c.List()
 		if err != nil {
-			fmt.Printf("  (error: %v)\n", err)
+			fmt.Printf("  %s\n", red(fmt.Sprintf("(error: %v)", err)))
 			any = true
 			fmt.Println()
 			continue
 		}
 		if len(servers) == 0 {
-			fmt.Println("  (no servers)")
+			fmt.Printf("  %s\n", faint("(no servers)"))
 		}
 		names := make([]string, 0, len(servers))
 		for n := range servers {
@@ -50,7 +50,7 @@ func cmdList(args []string) error {
 		sort.Strings(names)
 		for _, n := range names {
 			s := servers[n]
-			fmt.Printf("  %-20s [%s] %s\n", n, s.Transport(), describe(s))
+			fmt.Printf("  %-20s %s %s\n", green(n), cyan(fmt.Sprintf("[%s]", s.Transport())), faint(describe(s)))
 		}
 		any = true
 		fmt.Println()
@@ -81,15 +81,15 @@ func cmdShow(args []string) error {
 	if !ok {
 		return fmt.Errorf("no server %q in %s", name, c.ID())
 	}
-	fmt.Printf("client:  %s (%s)\n", c.ID(), c.ConfigPath())
-	fmt.Printf("name:    %s\n", s.Name)
-	fmt.Printf("transport: %s\n", s.Transport())
+	fmt.Printf("%s %s (%s)\n", faint("client:"), bold(c.ID()), faint(c.ConfigPath()))
+	fmt.Printf("%s    %s\n", faint("name:"), green(s.Name))
+	fmt.Printf("%s %s\n", faint("transport:"), cyan(s.Transport()))
 	if s.URL != "" {
-		fmt.Printf("url:     %s\n", s.URL)
+		fmt.Printf("%s     %s\n", faint("url:"), s.URL)
 	} else {
-		fmt.Printf("command: %s\n", s.Command)
+		fmt.Printf("%s %s\n", faint("command:"), s.Command)
 		if len(s.Args) > 0 {
-			fmt.Printf("args:    %s\n", strings.Join(s.Args, " "))
+			fmt.Printf("%s    %s\n", faint("args:"), strings.Join(s.Args, " "))
 		}
 	}
 	if len(s.Env) > 0 {
@@ -98,9 +98,9 @@ func cmdShow(args []string) error {
 			keys = append(keys, k)
 		}
 		sort.Strings(keys)
-		fmt.Println("env:")
+		fmt.Println(faint("env:"))
 		for _, k := range keys {
-			fmt.Printf("  %s=%s\n", k, s.Env[k])
+			fmt.Printf("  %s=%s\n", yellow(k), s.Env[k])
 		}
 	}
 	return nil
@@ -135,7 +135,7 @@ func cmdAdd(args []string) error {
 	if err := c.Add(s); err != nil {
 		return err
 	}
-	fmt.Printf("added %q to %s\n", name, c.ID())
+	fmt.Printf("%s %q %s %s\n", green("added"), name, faint("to"), bold(c.ID()))
 	return nil
 }
 
@@ -157,7 +157,7 @@ func cmdRemove(args []string) error {
 	if err := c.Remove(name); err != nil {
 		return err
 	}
-	fmt.Printf("removed %q from %s\n", name, c.ID())
+	fmt.Printf("%s %q %s %s\n", green("removed"), name, faint("from"), bold(c.ID()))
 	return nil
 }
 
