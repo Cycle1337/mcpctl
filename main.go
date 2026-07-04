@@ -7,9 +7,10 @@ import (
 
 const usage = `mcpctl — manage MCP servers across AI coding clients
 
-Claude Desktop, Cursor and Claude Code each keep their own MCP server list,
-in their own JSON, in their own place. mcpctl reads and writes them all from
-one command so you stop hand-editing three config files.
+Claude Desktop, Cursor, Claude Code and Codex each keep their own MCP server
+list, in their own config (JSON for the first three, TOML for Codex), in their
+own place. mcpctl reads and writes them all from one command so you stop
+hand-editing four config files.
 
 usage:
   mcpctl doctor                       show detected clients and their config paths
@@ -19,9 +20,10 @@ usage:
                                       add a stdio server; use --url for a remote one
   mcpctl rm <name> --client ID        remove a server
 
-clients: claude-code, cursor, claude-desktop
-  (claude-code is read-only here — its ~/.claude.json is large and hand-managed,
-   so use "claude mcp add" to change it. mcpctl still lists it.)
+clients: claude-code, cursor, claude-desktop, codex
+  (claude-code and codex are read-only here — their config files are large
+   and hold unrelated state, so use "claude mcp add" / "codex mcp add" to
+   change them. mcpctl still lists them so you can see everything in one place.)
 
 examples:
   mcpctl add filesystem --client cursor -- npx -y @modelcontextprotocol/server-filesystem /tmp
@@ -57,7 +59,7 @@ func run(args []string) error {
 		fmt.Println(usage)
 		return nil
 	case "-v", "--version":
-		fmt.Println("mcpctl 0.1.0")
+		fmt.Println("mcpctl 0.2.0")
 		return nil
 	default:
 		return fmt.Errorf("unknown command %q\n\n%s", cmd, usage)

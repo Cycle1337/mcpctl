@@ -2,10 +2,10 @@
 
 Manage MCP servers across AI coding clients from one terminal.
 
-Claude Desktop, Cursor and Claude Code each keep their own MCP server list,
-in their own JSON, in their own place. You end up hand-editing three config
-files and getting the indentation wrong. `mcpctl` reads and writes them all
-from one command.
+Claude Desktop, Cursor, Claude Code and Codex each keep their own MCP server
+list, in their own config file (JSON for the first three, TOML for Codex), in
+their own place. You end up hand-editing four files and getting the
+indentation wrong. `mcpctl` reads and writes them all from one command.
 
 ## Install
 
@@ -54,29 +54,33 @@ $ mcpctl list
 
 ## Clients
 
-| id | client | can mcpctl write? |
-| --- | --- | --- |
-| `cursor` | Cursor (`~/.cursor/mcp.json`) | yes |
-| `claude-desktop` | Claude Desktop | yes |
-| `claude-code` | Claude Code (`~/.claude.json`) | no — read-only |
+| id | client | config | can mcpctl write? |
+| --- | --- | --- | --- |
+| `cursor` | Cursor | `~/.cursor/mcp.json` | yes |
+| `claude-desktop` | Claude Desktop | `claude_desktop_config.json` | yes |
+| `claude-code` | Claude Code | `~/.claude.json` | no — read-only |
+| `codex` | Codex | `~/.codex/config.toml` | no — read-only |
 
-Claude Code is read-only on purpose: `~/.claude.json` is large, holds a lot
-of unrelated state, and Claude Code already ships `claude mcp add/remove`.
-`mcpctl` lists it so you can see everything in one place, but points you at
-`claude mcp` to change it.
+Claude Code and Codex are read-only on purpose: their config files are large,
+hold a lot of unrelated state (and, for Codex, user comments), and neither
+client's format survives a round-trip through Go's TOML/JSON libs without
+being reformatted. Both already ship their own `mcp add/remove` command, so
+`mcpctl` lists them so you can see all your servers in one place, but points
+you at the native command to change them.
 
 ## Status
 
-v0.1 — the three clients above, stdio and http/sse transports. Planned:
-Codex (`~/.codex/config.toml`), `enable`/`disable`, and a `--json` output
-flag for scripting. Issues and PRs welcome.
+v0.2 — four clients (Cursor, Claude Desktop, Claude Code, Codex), stdio and
+http/sse transports. Planned: `enable`/`disable`, and a `--json` output flag
+for scripting. Issues and PRs welcome.
 
 ## Why not just edit the JSON
 
 You can. But I kept forgetting which file holds Cursor's servers, kept
-breaking Claude Desktop's config with a trailing comma, and kept wanting to
-see all my servers in one list to remember which one I'd put the GitHub token
-in. So this.
+breaking Claude Desktop's config with a trailing comma, kept wanting to see
+all my servers in one list to remember which one I'd put the GitHub token
+in, and kept opening Codex's `config.toml` and worrying I'd nuke the rest of
+it. So this.
 
 ## License
 
